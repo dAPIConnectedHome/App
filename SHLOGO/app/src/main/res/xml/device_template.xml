@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<devices>
+    <device1>
+        <id>1</id>
+        <type>led</type>
+        <state>off</state>
+        <brightness>100</brightness>
+        <name>Lampe</name>
+        <room>Küche</room>
+    </device1>
+</devices>

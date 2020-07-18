@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.shlogo.activities.AddDevice"
+    android:onClick="hidePopups">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_device_cap"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/device_name_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/device_name"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <EditText
+        android:id="@+id/deviceNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:onClick="hidePopups"
+        app:layout_constraintBaseline_toBaselineOf="@+id/device_name_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/device_name_id" />
+
+    <TextView
+        android:id="@+id/room_name_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/room_name"
+        app:layout_constraintStart_toStartOf="@+id/device_name_id"
+        app:layout_constraintTop_toBottomOf="@+id/device_name_id" />
+
+    <EditText
+        android:id="@+id/roomNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:onClick="hidePopups"
+        app:layout_constraintBaseline_toBaselineOf="@+id/room_name_id"
+        app:layout_constraintStart_toStartOf="@+id/deviceNameText" />
+
+    <TextView
+        android:id="@+id/group_name_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/group_name"
+        app:layout_constraintStart_toStartOf="@+id/room_name_id"
+        app:layout_constraintTop_toBottomOf="@+id/room_name_sub_id" />
+
+    <EditText
+        android:id="@+id/groupNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/roomNameText"
+        app:layout_constraintTop_toTopOf="@+id/group_name_id" />
+
+    <TextView
+        android:id="@+id/room_name_sub_id"
+        android:layout_width="96dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/room_name_sub"
+        android:textAlignment="viewStart"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/room_name_id"
+        app:layout_constraintTop_toBottomOf="@+id/room_name_id" />
+
+    <ListView
+        android:id="@+id/groupList"
+        android:layout_width="259dp"
+        android:layout_height="178dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/group_pop"
+        app:layout_constraintTop_toTopOf="@+id/group_pop" />
+
+    <Button
+        android:id="@+id/complete_new_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="363dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="onFinish"
+        android:text="@string/finish"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/groupNameText" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onCancel"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toStartOf="@+id/complete_new_device"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/complete_new_device" />
+
+    <Button
+        android:id="@+id/group_pop"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:onClick="onGroupPopup"
+        android:text="..."
+        android:textSize="6sp"
+        app:layout_constraintStart_toEndOf="@+id/groupNameText"
+        app:layout_constraintTop_toTopOf="@+id/groupNameText" />
+
+    <TextView
+        android:id="@+id/activeGroups"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/groupNameText"
+        app:layout_constraintTop_toBottomOf="@+id/groupNameText" />
+
+    <Button
+        android:id="@+id/roomListButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:onClick="onRoomPopup"
+        android:text="..."
+        android:textSize="6sp"
+        app:layout_constraintStart_toEndOf="@+id/roomNameText"
+        app:layout_constraintTop_toTopOf="@+id/roomNameText" />
+
+    <ListView
+        android:id="@+id/roomList"
+        android:layout_width="221dp"
+        android:layout_height="125dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/roomListButton"
+        app:layout_constraintTop_toTopOf="@+id/roomListButton" />
+
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/error"
+        android:textColor="#FF0000"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/complete_new_device"
+        app:layout_constraintEnd_toEndOf="@+id/complete_new_device" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
