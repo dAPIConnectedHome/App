@@ -6,32 +6,54 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
 import com.shlogo.R
 import com.shlogo.classes.Device
+import com.shlogo.classes.Type
 import com.shlogo.fragments.History
-import com.shlogo.fragments.SensorHome
+import com.shlogo.fragments.LampHome
 
-class SensorActivty : AppCompatActivity() {
-
-    private val url = "http://gitathome.dd-dns.de:61999/weatherforecast"
-    private lateinit var homeFragment: SensorHome
+class LampActivity : AppCompatActivity() {
+    private lateinit var homeFragment: LampHome
     private lateinit var histFragment: History
     private lateinit var lastDevice: Device
+    private lateinit var listTypes: List<Type>
     private var lastFragOpened: Int = 0
     private var inView: Boolean = true
+    private var findTypeCnt = 0
+
+
+    var type: Type = Type(0, "", "", 0,0)
+
+    private val volTypes = object : MainActivity.VolleyCallbackTypes {
+        override fun onSuccess(result: List<Type>?) {
+            listTypes = result!!
+            val id = intent.getStringExtra("ID")
+            val thread = Runnable {
+                while (inView) {
+                    getDevice(volDevice, id!!)
+                    Thread.sleep(120000)
+                }
+            }
+            val myThread = Thread(thread)
+            myThread.start()
+        }
+    }
 
     val volDevice = object : MainActivity.VolleyCallbackDevice {
         override fun onSuccess(result: Device?) {
             lastDevice = result!!
+            while (findTypeCnt < listTypes.size){
+                if (listTypes[findTypeCnt].typeId == lastDevice.typeid){
+                    type = listTypes[findTypeCnt]
+                }
+                findTypeCnt++
+            }
             val idText = findViewById<TextView>(R.id.idText)
             val typeText = findViewById<TextView>(R.id.typeText)
             val nameText = findViewById<TextView>(R.id.nameText)
@@ -40,9 +62,8 @@ class SensorActivty : AppCompatActivity() {
             typeText.text = lastDevice.typeid.toString()
             nameText.text = lastDevice.name
             roomText.text = lastDevice.room
-
+            homeFragment = LampHome.newInstance(lastDevice, type)
             histFragment = History.newInstance()
-            homeFragment = SensorHome.newInstance(lastDevice.clientId, lastDevice.typeid.toString(), lastDevice.name, lastDevice.room, lastDevice.currentValue)
             if(lastFragOpened == 0) {
                 openFragment(homeFragment)
             } else{
@@ -94,7 +115,6 @@ class SensorActivty : AppCompatActivity() {
         queue.add(arrayRequest)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sensor)
@@ -102,42 +122,7 @@ class SensorActivty : AppCompatActivity() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        val id = intent.getStringExtra("ID")
-
-
-
-        /*val queue: RequestQueue = Volley.newRequestQueue(this@SensorActivty)
-        val tempText = findViewById<TextView>(R.id.valueText)
-        var packagesArray: List<TestClass>? = null
-        val thread = Runnable {
-            var i = 0
-            while (inView) {
-                i++
-                getDevice(volDevice, id!!)
-                tempText.post(Runnable {
-                    val stringRequest = JsonArrayRequest(
-                        Request.Method.GET, url, null,
-                        Response.Listener { response ->
-                            val gson = GsonBuilder().create()
-                            packagesArray = gson.fromJson(response.toString(), Array<TestClass>::class.java).toList()
-                        },
-                        Response.ErrorListener {
-                            fun onErrorResponse(error: VolleyError) {
-                                Log.e("tag", "Error at sign in : " + error.message)
-                            }
-                            onErrorResponse(it)
-                        }
-                    )
-                    queue.add(stringRequest)
-                    if(!packagesArray.isNullOrEmpty()){
-                        tempText.text = packagesArray!![0].temperatureC
-                    }
-                })
-                Thread.sleep(500)
-            }
-        }
-        val myThread = Thread(thread)
-        myThread.start()*/
+        type.getTypes(getString(R.string.urlTypes), volTypes, this)
     }
 
     override fun onStart() {
@@ -149,14 +134,3 @@ class SensorActivty : AppCompatActivity() {
         super.onStop()
     }
 }
-
-data class TestClass(
-    @SerializedName("date")
-    var date: String,
-    @SerializedName("temperatureC")
-    var temperatureC: String,
-    @SerializedName("temperatureF")
-    var temperatureF: String,
-    @SerializedName("summary")
-    var summary: String
-)

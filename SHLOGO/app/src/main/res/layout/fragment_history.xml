@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linechartHistMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.History">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/linechartHist"
+            android:layout_width="333dp"
+            android:layout_height="337dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/histData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/linechartHist"
+            app:layout_constraintEnd_toEndOf="@+id/linechartHist"
+            app:layout_constraintStart_toStartOf="@+id/linechartHist" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

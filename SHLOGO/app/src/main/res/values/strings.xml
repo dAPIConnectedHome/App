@@ -1,6 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SHLOGO</string>
 
+    <string name="url" tools:ignore="MissingTranslation">http://gitathome.dd-dns.de:61999/api/Mqttclients</string>
+    <string name="urlTypes" tools:ignore="MissingTranslation">http://gitathome.dd-dns.de:61999/api/MqttclientTypes</string>
     <string name="example_string">Example String</string>
     <string name="goto_control_button">Control</string>
 
@@ -126,5 +128,9 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="channel_description">Notification</string>
     <string name="channel_name">Notif</string>
+    <string name="title_activity_test_nav_bott">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

@@ -1,7 +1,5 @@
 package com.shlogo.classes
 
-import android.os.Parcelable
-import java.io.Serializable
 
 class Group(name: String) {
     val groupName = name

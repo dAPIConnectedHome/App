@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,17 +12,14 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonArray
 import com.google.gson.annotations.SerializedName
+import com.shlogo.R
 import com.shlogo.R.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.nio.charset.Charset
 
 
@@ -40,15 +36,14 @@ class ControlActivity : AppCompatActivity() {
        //val params = Map<String,String>()
        //params["1"] = "test"
        //params["2"] = "test"
-        val jsonObject = JSONArray("[tobistinktbrutal]")
+        val jsonObject = JSONArray("[0]")
         sw.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 // Instantiate the RequestQueue.
                 val queue = Volley.newRequestQueue(this)
-                val url = "http://gitathome.dd-dns.de:61999/weatherforecast"
-                val url2 = "http://gitathome.dd-dns.de:61999/api/Client"
-                //61999
-                val request = JsonArrayRequest(Request.Method.POST,url2,jsonObject,
+                var url = getString(R.string.url)
+                url += "/A1008"
+                val request = JsonArrayRequest(Request.Method.POST,url,jsonObject,
                     Response.Listener { response ->
                         // Process the json
                         try {
@@ -56,7 +51,6 @@ class ControlActivity : AppCompatActivity() {
                         }catch (e:Exception){
                             text.text = "Exception: $e"
                         }
-
                     }, Response.ErrorListener{
                         // Error in request
                         text.text = "Volley error: $it"
@@ -65,7 +59,6 @@ class ControlActivity : AppCompatActivity() {
                         }
                         onErrorResponse(it)
                     })
-
 
                 // Volley request policy, only one time request to avoid duplicate transaction
                 request.retryPolicy = DefaultRetryPolicy(
@@ -78,23 +71,23 @@ class ControlActivity : AppCompatActivity() {
                 // Add the volley post request to the request queue
                 queue.add(request)
                 // Request a string response from the provided URL.
-                val stringRequest = JsonArrayRequest(
-                    Request.Method.GET, url, null,
-                    Response.Listener { response ->
-                        text.text = "Response is: %s" .format(response[0])
-                        val gson = GsonBuilder().create()
-                        packagesArray = gson.fromJson(response.toString(), Array<TestClass>::class.java).toList()
-                        text.text = packagesArray[0].date
-                    },
-                    Response.ErrorListener {
-                        text.text = "That didn't work!"
-                        fun onErrorResponse(error: VolleyError) {
-                            Log.e("tag", "Error at sign in : " + error.message)
-                        }
-                        onErrorResponse(it)
-                    }
-                )
-                queue.add(stringRequest)
+                //val stringRequest = JsonArrayRequest(
+                //    Request.Method.GET, url, null,
+                //    Response.Listener { response ->
+                //        text.text = "Response is: %s" .format(response[0])
+                //        val gson = GsonBuilder().create()
+                //        packagesArray = gson.fromJson(response.toString(), Array<TestClass>::class.java).toList()
+                //        text.text = packagesArray[0].date
+                //    },
+                //    Response.ErrorListener {
+                //        text.text = "That didn't work!"
+                //        fun onErrorResponse(error: VolleyError) {
+                //            Log.e("tag", "Error at sign in : " + error.message)
+                //        }
+                //        onErrorResponse(it)
+                //    }
+                //)
+                //queue.add(stringRequest)
                 //text.text = "Checked"
             } else{
                 //text.text = readTxt()
