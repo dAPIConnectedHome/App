@@ -6,8 +6,8 @@
 
     <string name="add_device_cap">Füge ein neues Gerät hinzu</string>
     <string name="add_device_button">neues Gerät</string>
-    <string name="device_name">Geräte Name:</string>
-    <string name="room_name">Raum Name:</string>
+    <string name="device_name">Geräte Name</string>
+    <string name="room_name">Raum Name</string>
     <string name="room_name_sub">Erstelle einen neuen Raum oder wähle einen Raum aus der Auswahl</string>
 
     <string name="group_name">Zu einer Gruppe hinzufügen:</string>
@@ -17,4 +17,16 @@
     <string name="error">Überprüfe ob der Geräte- und Raumname angegeben sind</string>
     <string name="channel_description">Notification</string>
     <string name="channel_name">Notif</string>
+    <string name="app_name">SHLOGO</string>
+    <string name="example_string">Beispiel String</string>
+    <string name="goto_control_button">Kontrolle</string>
+    <string name="dev_settings">Geräteeinstellungen</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="title_activity_add_device">Gerät hinzufügen</string>
+    <string name="title_home">Zuhause</string>
+    <string name="title_notifications">Benachrichtigung</string>
+    <string name="del_dev">Geräte entfernen</string>
+    <string name="type_name">Gerätetyp</string>
+    <string name="save_settings">Einstellungen übernehmen</string>
+    <string name="history">Geschichte</string>
 </resources>

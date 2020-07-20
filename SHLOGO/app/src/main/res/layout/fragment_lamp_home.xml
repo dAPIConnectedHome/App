@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="NAME"
-        android:textSize="36sp"
+        android:textSize="42sp"
         app:layout_constraintBottom_toTopOf="@+id/imageSensorHome"
         app:layout_constraintEnd_toEndOf="@+id/imageSensorHome"
         app:layout_constraintStart_toStartOf="@+id/imageSensorHome" />

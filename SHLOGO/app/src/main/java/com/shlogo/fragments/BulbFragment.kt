@@ -25,8 +25,4 @@ class BulbFragment: Fragment() {
         fun newInstance() =
             BulbFragment().apply {}
     }
-
-    //fun invalidate() {
-    //    myView.post(Runnable { myView.invalidate() })
-    //}
 }

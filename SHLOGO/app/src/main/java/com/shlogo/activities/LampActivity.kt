@@ -1,7 +1,10 @@
 package com.shlogo.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -14,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
 import com.shlogo.R
 import com.shlogo.classes.Device
+import com.shlogo.classes.Networking
 import com.shlogo.classes.Type
 import com.shlogo.fragments.History
 import com.shlogo.fragments.LampHome
@@ -26,17 +30,16 @@ class LampActivity : AppCompatActivity() {
     private var lastFragOpened: Int = 0
     private var inView: Boolean = true
     private var findTypeCnt = 0
-
-
+    private val net = Networking()
     var type: Type = Type(0, "", "", 0,0)
 
-    private val volTypes = object : MainActivity.VolleyCallbackTypes {
+    private val volTypes = object : Networking.VolleyCallbackTypes {
         override fun onSuccess(result: List<Type>?) {
             listTypes = result!!
             val id = intent.getStringExtra("ID")
             val thread = Runnable {
                 while (inView) {
-                    getDevice(volDevice, id!!)
+                    net.getDevice(volDevice, id!!, this@LampActivity)
                     Thread.sleep(120000)
                 }
             }
@@ -45,7 +48,7 @@ class LampActivity : AppCompatActivity() {
         }
     }
 
-    val volDevice = object : MainActivity.VolleyCallbackDevice {
+    val volDevice = object : Networking.VolleyCallbackDevice {
         override fun onSuccess(result: Device?) {
             lastDevice = result!!
             while (findTypeCnt < listTypes.size){
@@ -58,12 +61,19 @@ class LampActivity : AppCompatActivity() {
             val typeText = findViewById<TextView>(R.id.typeText)
             val nameText = findViewById<TextView>(R.id.nameText)
             val roomText = findViewById<TextView>(R.id.roomText)
+            val settings = findViewById<ImageButton>(R.id.settingsImageButton)
+            settings.setOnClickListener {
+                val intent = Intent(this@LampActivity, DeviceSettingsActivity::class.java)
+                intent.putExtra("ID",lastDevice.clientId)
+                startActivity(intent)
+            }
+
             idText.text = lastDevice.toString()
             typeText.text = lastDevice.typeid.toString()
             nameText.text = lastDevice.name
             roomText.text = lastDevice.room
             homeFragment = LampHome.newInstance(lastDevice, type)
-            histFragment = History.newInstance()
+            histFragment = History.newInstance(lastDevice)
             if(lastFragOpened == 0) {
                 openFragment(homeFragment)
             } else{
@@ -95,34 +105,13 @@ class LampActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDevice(callback: MainActivity.VolleyCallbackDevice, dev: String) {
-        val url = getString(R.string.url) + "/$dev"
-        val queue = Volley.newRequestQueue(this)
-        val arrayRequest = JsonObjectRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                val gson = GsonBuilder().create()
-                val list = gson.fromJson(response.toString(), Device::class.java)
-                callback.onSuccess(list);
-            },
-            Response.ErrorListener {
-                fun onErrorResponse(error: VolleyError) {
-                    Log.e("tag", "Error at sign in : " + error.message)
-                }
-                onErrorResponse(it)
-            }
-        )
-        queue.add(arrayRequest)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sensor)
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        type.getTypes(getString(R.string.urlTypes), volTypes, this)
+        net.getTypes(volTypes, this)
     }
 
     override fun onStart() {

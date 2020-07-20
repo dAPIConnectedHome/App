@@ -31,38 +31,4 @@ class Device(
      @SerializedName("currentValue")
      var currentValue: Int
 ){
-     public fun putRequest(dev: String, value: String, context: Context){
-          val jsonObject = JSONArray("[$value]")
-          val queue = Volley.newRequestQueue(context)
-          var url = context.getString(R.string.url)
-          url += "/$dev"
-          val request = JsonArrayRequest(Request.Method.POST,url,jsonObject,
-               Response.Listener { response ->
-                    // Process the json
-                    try {
-                    }catch (e:Exception){
-                    }
-               }, Response.ErrorListener{
-                    // Error in request
-                    fun onErrorResponse(error: VolleyError) {
-                         Log.e("tag", "Error at sign in : " + error.message)
-                    }
-                    onErrorResponse(it)
-               })
-          request.retryPolicy = DefaultRetryPolicy(
-               DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-               0, // DefaultRetryPolicy.DEFAULT_MAX_RETRIES = 2
-               1f // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-          )
-          queue.add(request)
-     }
 }
-
-/*class Device(i: String, na: String, ro: Room, ty: String, gr: List<Group>) {
-     var id = i
-     var name = na
-     var room = ro
-     var type = ty
-     var group = gr
-
-}*/

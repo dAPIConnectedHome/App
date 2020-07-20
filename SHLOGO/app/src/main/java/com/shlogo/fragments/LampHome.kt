@@ -2,6 +2,8 @@ package com.shlogo.fragments
 
 import android.R.attr.angle
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,13 +18,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.shlogo.R
 import com.shlogo.classes.Device
+import com.shlogo.classes.Networking
 import com.shlogo.classes.Type
 
 
+@Suppress("DEPRECATION")
 class LampHome : Fragment() {
 
     lateinit var device: Device
     lateinit var type: Type
+    val net = Networking()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,6 +58,8 @@ class LampHome : Fragment() {
         )
         layoutParams.setMargins(0, 0, 0, 0)
         seekBar.layoutParams = layoutParams
+        seekBar.progressDrawable.setColorFilter(0xFF000000.toInt(), PorterDuff.Mode.MULTIPLY);
+        seekBar.thumb.setColorFilter(0xFF00FF00.toInt(), PorterDuff.Mode.MULTIPLY);
         seekBar.min = type.rangeMin
         seekBar.max = type.rangeMax
         seekBar.progress = device.currentValue
@@ -64,7 +71,7 @@ class LampHome : Fragment() {
                 value: Int,
                 usr: Boolean
             ) {
-                device.putRequest(device.clientId, value.toString(), input.context)
+                net.postRequest(device.clientId, value.toString(), input.context)
                 valueText.text = value.toString()
                 if(value == type.rangeMin){
                     image.setImageResource(R.drawable.lamp)

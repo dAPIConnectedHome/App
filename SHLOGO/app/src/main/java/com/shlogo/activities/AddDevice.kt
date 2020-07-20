@@ -15,6 +15,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.shlogo.R
+import com.shlogo.classes.Networking
 import org.json.JSONArray
 import java.io.*
 
@@ -23,8 +24,16 @@ class AddDevice : AppCompatActivity() {
 
     private lateinit var listview: ListView
     private lateinit var roomview: ListView
-    private lateinit var button: Button
+    private lateinit var buttonRoom: ImageButton
+    private lateinit var buttonGroup: ImageButton
     private var activeGroups = mutableListOf<String>()
+    val changesApplied = object : Networking.VolleyCallbackPut {
+        override fun onSuccess() {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +44,7 @@ class AddDevice : AppCompatActivity() {
     }
 
     private fun roomList(){
-        button = findViewById<Button>(R.id.roomListButton)
+        buttonRoom = findViewById<ImageButton>(R.id.roomListButton)
         roomview = findViewById<ListView>(R.id.roomList)
         roomview.choiceMode = ListView.CHOICE_MODE_SINGLE
         roomview.setBackgroundColor(0xDFDFDFDF.toInt())
@@ -52,7 +61,7 @@ class AddDevice : AppCompatActivity() {
         }
     }
     private fun groupList(){
-        button = findViewById<Button>(R.id.group_pop)
+        buttonGroup = findViewById<ImageButton>(R.id.group_pop)
         listview = findViewById<ListView>(R.id.groupList)
         listview.choiceMode = ListView.CHOICE_MODE_MULTIPLE
         listview.setBackgroundColor(0xDFDFDFDF.toInt())
@@ -100,76 +109,29 @@ class AddDevice : AppCompatActivity() {
 
 
     fun onFinish(view: View){
-        val existing = readFromFile(this)
-        val regex = Regex("id = ([0-9]+);")
-        val matches = regex.findAll(existing)
-        var id = mutableListOf<String>()
-        matches.forEach { f ->
-            id.add(f.groupValues[1])
-        }
-        var idcheck = 1000
-        var x = 0
-        while(x < id.size){
-            idcheck++
-            x++;
-        }
-        var type = ""
-        val typcheck = idcheck % 2
-        if(typcheck == 1){
-            type = "led"
-        } else {
-            type = "sensor"
-        }
-        val idString = idcheck.toString()
+
         val device = findViewById<EditText>(R.id.deviceNameText).text.toString()
         val room = findViewById<EditText>(R.id.roomNameText).text.toString()
-        if(device == "" || room == ""){
+        if(device == "" || room == "" || room == "-1"){
             val errorView = findViewById<TextView>(R.id.errorTextView)
             errorView.visibility = View.VISIBLE
             return
         }
-        var group = findViewById<EditText>(R.id.groupNameText).text.toString()
+        val group = findViewById<EditText>(R.id.groupNameText).text.toString()
         var grouplist: String = ""
         if(group != ""){
-            grouplist = "[$group]"
+            grouplist = group
         }
         var i = 0
         while (i < activeGroups.size){
             val gr = activeGroups[i]
-            grouplist += "[$gr]"
+            grouplist += ",$gr"
             i++
         }
-        //val text = "id = $idString;type = $type;device = $device;room = $room;group = $grouplist;$existing"
-        //writeToFile(text, this)
-        //val putString = "[$device, $room]"
+        val deviceId = intent.getStringExtra("DEVICEID")!!
 
-        val deviceId = intent.getStringExtra("DEVICEID")
-        val jsonObject = JSONArray("[$device, $room, $group]")
-        //val jsonObject = JSONArray("[test, Bedroom]")
-        val queue = Volley.newRequestQueue(this)
-        //val url = "http://gitathome.dd-dns.de:61999/weatherforecast"
-        val url2 = "http://gitathome.dd-dns.de:61999/api/Mqttclients/$deviceId"
-        //61999
-        val request = JsonArrayRequest(Request.Method.PUT, url2, jsonObject,
-            Response.Listener { response ->
-                try {
-                } catch (e: Exception) {
-                }
-
-            }, Response.ErrorListener {
-                fun onErrorResponse(error: VolleyError) {
-                    Log.e("tag", "Error at sign in : " + error.message)
-                }
-                onErrorResponse(it)
-            })
-        request.retryPolicy = DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-            // 0 means no retry
-            0, // DefaultRetryPolicy.DEFAULT_MAX_RETRIES = 2
-            1f // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        queue.add(request)
-        Thread.sleep(500)
+        val net = Networking()
+        net.putRequest(changesApplied, deviceId, device, room, grouplist, this)
         val intent = Intent(this, MainActivity::class.java).apply {
         }
         startActivity(intent)
@@ -210,5 +172,37 @@ class AddDevice : AppCompatActivity() {
         }
         return ret
     }
-
 }
+
+
+
+
+//INIT TEST WITHOUT SERVER
+
+//val existing = readFromFile(this)
+//val regex = Regex("id = ([0-9]+);")
+//val matches = regex.findAll(existing)
+//var id = mutableListOf<String>()
+//matches.forEach { f ->
+//    id.add(f.groupValues[1])
+//}
+//var idcheck = 1000
+//var x = 0
+//while(x < id.size){
+//    idcheck++
+//    x++;
+//}
+//var type = ""
+//val typcheck = idcheck % 2
+//if(typcheck == 1){
+//    type = "led"
+//} else {
+//    type = "sensor"
+//}
+//val idString = idcheck.toString()
+
+
+
+//val text = "id = $idString;type = $type;device = $device;room = $room;group = $grouplist;$existing"
+//writeToFile(text, this)
+//val putString = "[$device, $room]"

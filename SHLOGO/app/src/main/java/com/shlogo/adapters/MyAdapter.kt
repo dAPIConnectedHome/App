@@ -6,30 +6,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.shlogo.R
 import com.shlogo.activities.SensorActivty
 import com.shlogo.activities.LampActivity
 import com.shlogo.classes.Device
+import com.shlogo.classes.Networking
 import com.shlogo.classes.Type
-import org.json.JSONArray
+
 
 public class MyAdapter(c: Context, dev: List<Device>, typ: List<Type>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var ct: Context = c
     private var devices: List<Device> = dev
     private var types: List<Type> = typ
+    private var net = Networking()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(ct)
@@ -56,13 +52,32 @@ public class MyAdapter(c: Context, dev: List<Device>, typ: List<Type>) : Recycle
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(devices[position].typeid == 2){
+        return if(devices[position].typeid == 100){
             1
-        } else if(devices[position].typeid == 1){
+        } else if(devices[position].typeid == 3){
             2
         } else {
-            2
+            1
         }
+        /*
+        return if(devices[position].typeid == 1){
+            1
+        } else if(devices[position].typeid == 2){
+            2
+        } else if(devices[position].typeid == 3){
+            3
+        } else if(devices[position].typeid == 4){
+            4
+        } else if(devices[position].typeid == 100){
+            5
+        } else if(devices[position].typeid == 101){
+            6
+        } else if(devices[position].typeid == 102){
+            7
+        }else {
+            1
+        }
+         */
     }
     public class LampHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val mainLayout = itemView.findViewById<ConstraintLayout>(R.id.bulb_const_lay)
@@ -80,8 +95,21 @@ public class MyAdapter(c: Context, dev: List<Device>, typ: List<Type>) : Recycle
         when(holder.itemViewType){
             1 -> {
                 val viewHolder: SensorHolder = holder as SensorHolder
-                viewHolder.text.text = devices[position].clientId
-                viewHolder.sensor.setImageResource(R.drawable.temp)
+                viewHolder.text.text = devices[position].name
+                when (devices[position].typeid) {
+                    100 -> {
+                        viewHolder.sensor.setImageResource(R.drawable.temp)
+                    }
+                    101 -> {
+                        viewHolder.sensor.setImageResource(R.drawable.waterdroplet)
+                    }
+                    102 -> {
+                        viewHolder.sensor.setImageResource(R.drawable.uvsensor)
+                    }
+                    else -> {
+                        viewHolder.sensor.setImageResource(R.drawable.temp)
+                    }
+                }
                 var i = 0
                 var pos = 0
                 while (i < devices.size){
@@ -98,7 +126,7 @@ public class MyAdapter(c: Context, dev: List<Device>, typ: List<Type>) : Recycle
             }
             2 -> {
                 val viewHolder: LampHolder = holder as LampHolder
-                viewHolder.text.text = devices[position].clientId
+                viewHolder.text.text = devices[position].name
 
                 var j = 0
                 loop@while(j < types.size){
@@ -130,20 +158,22 @@ public class MyAdapter(c: Context, dev: List<Device>, typ: List<Type>) : Recycle
                 viewHolder.switch.setOnCheckedChangeListener { buttonView, isChecked ->
                     var k = 0
                     loop@while(k < types.size){
-                        if(types[j].typeId == devices[position].typeid){
+                        if(types[k].typeId == devices[position].typeid){
                             break@loop
                         }
                         k++
                     }
                     if(isChecked) {
-                        devices[pos].currentValue = types[j].rangeMax
+                        devices[position].currentValue = types[k].rangeMax
+                        Log.d("Dev", types[k].rangeMax.toString())
+                        Log.d("Nam", devices[position].clientId.toString())
                         viewHolder.img.setImageResource(R.drawable.lamp_on)
                     } else {
-                        devices[pos].currentValue = types[j].rangeMin
+                        devices[position].currentValue = types[k].rangeMin
                         viewHolder.img.setImageResource(R.drawable.lamp)
                     }
-                    val currVal =  devices[pos].currentValue.toString()
-                    devices[pos].putRequest(devices[pos].clientId, currVal, viewHolder.itemView.context)
+                    val currVal =  devices[position].currentValue.toString()
+                    net.postRequest(devices[position].clientId, currVal, viewHolder.itemView.context)
                 }
             }
         }

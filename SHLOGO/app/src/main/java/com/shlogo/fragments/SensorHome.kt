@@ -8,15 +8,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.shlogo.R
+import com.shlogo.classes.Device
 import kotlin.properties.Delegates
 
 class SensorHome : Fragment() {
 
-    lateinit var id: String
-    lateinit var type: String
-    lateinit var name: String
-    lateinit var room: String
-    var value by Delegates.notNull<Int>()
+    lateinit var device: Device
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,12 +28,25 @@ class SensorHome : Fragment() {
         val roomText = requireView().findViewById<TextView>(R.id.roomText)
         val valueText = requireView().findViewById<TextView>(R.id.valueText)
         val image = requireView().findViewById<ImageView>(R.id.imageSensorHome)
-        idText.text = id
-        typeText.text = type
-        nameText.text = name
-        roomText.text = room
-        valueText.text = value.toString()
-        image.setImageResource(R.drawable.temp).toString()
+        idText.text = device.clientId
+        typeText.text = device.type
+        nameText.text = device.name
+        roomText.text = device.room
+        valueText.text = device.currentValue.toString()
+        when (device.typeid) {
+            100 -> {
+                image.setImageResource(R.drawable.temp)
+            }
+            101 -> {
+                image.setImageResource(R.drawable.waterdroplet)
+            }
+            102 -> {
+                image.setImageResource(R.drawable.uvsensor)
+            }
+            else -> {
+                image.setImageResource(R.drawable.temp)
+            }
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -49,13 +59,9 @@ class SensorHome : Fragment() {
     }
 
     companion object {
-        fun newInstance(id: String, type: String, name:String, room: String, value: Int) =
+        fun newInstance(dev: Device) =
             SensorHome().apply {
-                this.id = id
-                this.type = type
-                this.name = name
-                this.room = room
-                this.value = value
+                this.device = dev
             }
     }
 }

@@ -6,4 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".activities.DeviceSettingsActivity">
 
+    <TextView
+        android:id="@+id/devSettingsCapText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/dev_settings"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/delDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="removeDevice"
+        android:text="@string/del_dev"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/settingsListView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/delDevice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/devSettingsCapText"
+        app:layout_constraintTop_toBottomOf="@+id/devSettingsCapText" />
+
+    <Button
+        android:id="@+id/saveSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:onClick="applyChanges"
+        android:text="@string/save_settings"
+        app:layout_constraintBottom_toBottomOf="@+id/delDevice"
+        app:layout_constraintEnd_toStartOf="@+id/delDevice"
+        app:layout_constraintTop_toTopOf="@+id/delDevice" />
 </androidx.constraintlayout.widget.ConstraintLayout>

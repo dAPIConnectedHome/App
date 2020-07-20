@@ -3,7 +3,7 @@ package com.shlogo.classes
 
 class Group(name: String) {
     val groupName = name
-    private var devices = mutableListOf<String>()
+    var devices = mutableListOf<Device>()
 
     private val serialVersionUID = 1L
 }

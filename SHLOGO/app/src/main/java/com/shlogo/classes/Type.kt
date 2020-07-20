@@ -9,7 +9,6 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
-import com.shlogo.activities.MainActivity
 
 class Type(
     @SerializedName("typeId")
@@ -23,22 +22,4 @@ class Type(
     @SerializedName("rangeMax")
     var rangeMax: Int
 ){
-    fun getTypes(url: String, callback: MainActivity.VolleyCallbackTypes, context: Context){
-        val queue = Volley.newRequestQueue(context)
-        val arrayRequest = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                val gson = GsonBuilder().create()
-                val list = gson.fromJson(response.toString(), Array<Type>::class.java).toList()
-                callback.onSuccess(list);
-            },
-            Response.ErrorListener {
-                fun onErrorResponse(error: VolleyError) {
-                    Log.e("tag", "Error at sign in : " + error.message)
-                }
-                onErrorResponse(it)
-            }
-        )
-        queue.add(arrayRequest)
-    }
 }

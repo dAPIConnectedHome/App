@@ -13,20 +13,30 @@
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/linechartHist"
-            android:layout_width="333dp"
+            android:layout_width="0dp"
             android:layout_height="337dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/histData" />
 
         <TextView
             android:id="@+id/histData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/linechartHist"
-            app:layout_constraintEnd_toEndOf="@+id/linechartHist"
-            app:layout_constraintStart_toStartOf="@+id/linechartHist" />
+            android:layout_marginTop="32dp"
+            android:text="DEVICENAME"
+            app:layout_constraintStart_toStartOf="@+id/headingHist"
+            app:layout_constraintTop_toBottomOf="@+id/headingHist" />
+
+        <TextView
+            android:id="@+id/headingHist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/history"
+            android:textSize="36sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

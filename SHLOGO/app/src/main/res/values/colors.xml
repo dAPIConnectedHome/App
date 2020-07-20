@@ -9,6 +9,6 @@
     <color name="textColorPrimaryDark">@android:color/primary_text_dark</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="background">#F0EEEEEE</color>
+    <color name="background">#FAFFFFFF</color>
     <color name="transp">@android:color/transparent</color>
 </resources>

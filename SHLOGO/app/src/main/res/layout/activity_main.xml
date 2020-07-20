@@ -20,44 +20,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/add_lamp"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:onClick="addDevice"
-        android:text="@string/light_bulb"
-        app:layout_constraintStart_toEndOf="@+id/button_control_open"
-        app:layout_constraintTop_toTopOf="@+id/button_control_open" />
-
     <TextView
         android:id="@+id/mainTextView"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_control_open" />
-
-    <Button
-        android:id="@+id/button_control_open"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:onClick="onBottonClick"
-        android:text="@string/goto_control_button"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home" />
+        app:layout_constraintTop_toBottomOf="@+id/addDeviceButton" />
 
     <Button
         android:id="@+id/addDeviceButton"
+        style="@android:style/Widget.DeviceDefault.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="addDevice"
         android:text="@string/add_device_button"
-        app:layout_constraintEnd_toStartOf="@+id/button_control_open"
-        app:layout_constraintTop_toTopOf="@+id/button_control_open" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/home" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -81,5 +61,15 @@
         app:layout_constraintTop_toBottomOf="@id/addDeviceButton">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        style="@android:style/Widget.Material.Light.ImageButton"
+        android:layout_width="40dp"
+        android:layout_height="45dp"
+        android:onClick="onRefesh"
+        android:src="@android:drawable/ic_popup_sync"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

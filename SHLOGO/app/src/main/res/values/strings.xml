@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SHLOGO</string>
 
-    <string name="url" tools:ignore="MissingTranslation">http://gitathome.dd-dns.de:61999/api/Mqttclients</string>
-    <string name="urlTypes" tools:ignore="MissingTranslation">http://gitathome.dd-dns.de:61999/api/MqttclientTypes</string>
+    <string name="url" tools:ignore="MissingTranslation" translatable="false">http://gitathome.dd-dns.de:61999/api/Mqttclients</string>
+    <string name="urlTypes" tools:ignore="MissingTranslation" translatable="false">http://gitathome.dd-dns.de:61999/api/MqttclientTypes</string>
     <string name="example_string">Example String</string>
     <string name="goto_control_button">Control</string>
 
@@ -12,14 +12,14 @@
     <string name="off_on">off on</string>
 
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="lamp_png_descr" translatable="false">This is a png of a simple lamp</string>
-    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
 
     <string name="add_device_cap">Add a new Device</string>
     <string name="add_device_button">new Device</string>
-    <string name="device_name">Device Name:</string>
-    <string name="room_name">Room Name:</string>
+    <string name="device_name">Device Name</string>
+    <string name="room_name">Room Name</string>
     <string name="room_name_sub">Create a new Room or select an existent</string>
 
     <string name="group_name">Add to a Group:</string>
@@ -28,7 +28,10 @@
     <string name="finish">Add new Device</string>
     <string name="error">Check if Name and Room are filled</string>
 
-    <string name="large_text">
+    <string name="dev_settings">Device settings</string>
+
+
+    <string name="large_text" translatable="false">
 
 
         "Material is the metaphor.\n\n"
@@ -128,9 +131,13 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="channel_description">Notification</string>
     <string name="channel_name">Notif</string>
-    <string name="title_activity_test_nav_bott">MainActivity</string>
+    <string name="title_activity_test_nav_bott" translatable="false">MainActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="del_dev">Delete Device</string>
+    <string name="type_name">Device Type</string>
+    <string name="save_settings">Apply Changes</string>
+    <string name="history">History</string>
 
 </resources>

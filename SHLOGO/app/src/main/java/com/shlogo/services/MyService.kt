@@ -15,7 +15,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
-import com.shlogo.activities.TestClass
+import com.shlogo.fragments.TestClass
 import com.shlogo.notif.NotificationWorker
 
 class MyService : Service() {

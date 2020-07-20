@@ -10,20 +10,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
 import com.shlogo.R
 import com.shlogo.R.layout
 import com.shlogo.adapters.MyAdapter
 import com.shlogo.adapters.RoomAdapter
-import com.shlogo.classes.Device
-import com.shlogo.classes.Group
-import com.shlogo.classes.Room
-import com.shlogo.classes.Type
+import com.shlogo.classes.*
 import com.shlogo.services.MyService
 import java.io.*
 
@@ -36,17 +27,18 @@ class MainActivity : Activity() {
     var listOfGroups = mutableListOf<Group>()
     var listOfRooms = mutableListOf<Room>()
     var listOfTypes = mutableListOf<Type>()
+    private val net = Networking()
     lateinit var text: String
-    private val volDevices = object : VolleyCallbackDevices {
+    private val volDevices = object : Networking.VolleyCallbackDevices {
         override fun onSuccess(result: List<Device>?) {
             createMainView(result)
+            simulateHistory()
         }
-
     }
-    private val volTypes = object : VolleyCallbackTypes {
+    private val volTypes = object : Networking.VolleyCallbackTypes {
         override fun onSuccess(result: List<Type>?) {
-            addTypes(result)
-            getDevices(volDevices)
+            listOfTypes =  (result as MutableList<Type>?)!!
+            net.getDevices(volDevices, this@MainActivity)
         }
     }
 
@@ -54,7 +46,6 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_main)
     }
-
     override fun onDestroy() {
         Intent(this, MyService::class.java).also { intent ->
             startService(intent)
@@ -67,10 +58,16 @@ class MainActivity : Activity() {
         listOfGroups.clear()
         listOfRooms.clear()
         listOfTypes.clear()
-        makeRequest(volTypes, getString(R.string.urlTypes))
+        net.getTypes(volTypes,this)
         super.onResume()
     }
 
+    fun onRefesh(view: View){
+        val intent = Intent(this, MainActivity::class.java).apply {
+        }
+        finish();
+        startActivity(intent)
+    }
     fun onBottonClick(view: View) {
         val intent = Intent(this, ControlActivity::class.java).apply {
         }
@@ -101,13 +98,6 @@ class MainActivity : Activity() {
 
         startActivity(intent)
     }
-
-    fun addTypes(result: List<Type>?){
-        val textView = findViewById<TextView>(R.id.mainTextView)
-        listOfTypes =  (result as MutableList<Type>?)!!
-        //textView.text = listOfTypes[0].typeId.toString()
-    }
-
     fun createMainView(result: List<Device>?) {
         val textView = findViewById<TextView>(R.id.mainTextView)
         listOfDevices = (result as MutableList<Device>?)!!
@@ -121,7 +111,6 @@ class MainActivity : Activity() {
             i++
         }
         i=0
-        var lastRoom = ""
         while (i < listOfDevices.size){
             listOfDevices[i].type = "ToDo"
             var k = 0
@@ -138,10 +127,31 @@ class MainActivity : Activity() {
                 newRoom.devices.add(listOfDevices[i])
                 listOfRooms.add(newRoom)
             }
+
+            k = 0
+            val regex = Regex(",?([^,]+)")
+            val matches = regex.findAll(listOfDevices[i].groupId)
+            matches.forEach { f ->
+                var groupAdded = false
+                k = 0
+                while (k < listOfGroups.size){
+                    if (listOfGroups[k].groupName == f.groupValues[1]){
+                        listOfGroups[k].devices.add(listOfDevices[i])
+                        groupAdded = true
+                    }
+                    k++
+                }
+                if(!groupAdded && listOfDevices[i].groupId != "-1"){
+                    val newGroup = Group(f.groupValues[1])
+                    newGroup.devices.add(listOfDevices[i])
+                    listOfGroups.add(newGroup)
+                }
+            }
             i++
         }
         i = 0
         val listOfAdapter = mutableListOf<MyAdapter>()
+        val listOfAdapterGroup = mutableListOf<MyAdapter>()
         while (i < listOfRooms.size){
             val myAdapter = MyAdapter(
                 this@MainActivity,
@@ -151,78 +161,69 @@ class MainActivity : Activity() {
             i++
             listOfAdapter.add(myAdapter)
         }
+        i = 0
+        while (i < listOfGroups.size){
+            val myAdapter = MyAdapter(
+                this@MainActivity,
+                listOfGroups[i].devices,
+                listOfTypes
+            )
+            i++
+            listOfAdapterGroup.add(myAdapter)
+        }
         val roomAdapter = RoomAdapter(
             this@MainActivity,
             listOfRooms,
-            listOfAdapter
+            listOfAdapter,
+            listOfGroups,
+            listOfAdapterGroup
         )
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = roomAdapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-
-
         i = 0
         var textString = ""
         if(listOfNotAddedDevices.isNotEmpty()) {
-            textString = "Not added devices:\n"
+            textString = "Not added devices: "
         }
         while (i < listOfNotAddedDevices.size){
-            textString += listOfNotAddedDevices[i].clientId + "\n"
+            textString += listOfNotAddedDevices[i].clientId + " -- "
             i++
         }
-       textView.text = textString
-    }
-    private fun getDevices(callback: VolleyCallbackDevices) {
-        val url = getString(R.string.url)
-        val queue = Volley.newRequestQueue(this)
-        val arrayRequest = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                val gson = GsonBuilder().create()
-                val list = gson.fromJson(response.toString(), Array<Device>::class.java).toList()
-                callback.onSuccess(list);
-            },
-            Response.ErrorListener {
-                fun onErrorResponse(error: VolleyError) {
-                    Log.e("tag", "Error at sign in : " + error.message)
-                }
-                onErrorResponse(it)
-            }
-        )
-        queue.add(arrayRequest)
-    }
-    private fun makeRequest(callback: VolleyCallbackTypes, url: String){
-        val queue = Volley.newRequestQueue(this)
-        val arrayRequest = JsonArrayRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                val gson = GsonBuilder().create()
-                val list = gson.fromJson(response.toString(), Array<Type>::class.java).toList()
-                callback.onSuccess(list);
-            },
-            Response.ErrorListener {
-                fun onErrorResponse(error: VolleyError) {
-                    Log.e("tag", "Error at sign in : " + error.message)
-                }
-                onErrorResponse(it)
-            }
-        )
-        queue.add(arrayRequest)
-    }
-    interface VolleyCallbackDevices {
-        fun onSuccess(result: List<Device>?)
-    }
-    interface VolleyCallbackTypes {
-        fun onSuccess(result: List<Type>?)
-    }
-    interface VolleyCallbackDevice {
-        fun onSuccess(result: Device?)
+        textView.text = textString
     }
 
-    private fun readFromFile(context: Context): String {
+
+    private val simHis = object : Networking.VolleyCallbackDevice{
+        override fun onSuccess(result: Device?) {
+            val device = result!!
+            val filename = device.clientId + ".txt"
+            var data = device.currentValue.toString() + ";"
+            val exist = readFromFile(filename, this@MainActivity)
+            data = exist + data
+            writeToFile(filename, data, this@MainActivity)
+        }
+    }
+
+    fun simulateHistory(){
+        val thread = Runnable {
+            while (true) {
+                var i = 0
+                while(i < listOfDevices.size){
+                    net.getDevice(simHis, listOfDevices[i].clientId, this)
+                    i++
+                }
+                Thread.sleep(5000)
+            }
+        }
+        val myThread = Thread(thread)
+        myThread.start()
+    }
+
+    fun readFromFile(fileName: String, context: Context): String {
         var ret = ""
         try {
-            val inputStream: InputStream? = context.openFileInput("devices.txt")
+            val inputStream: InputStream? = context.openFileInput(fileName)
             if (inputStream != null) {
                 val inputStreamReader = InputStreamReader(inputStream)
                 val bufferedReader = BufferedReader(inputStreamReader)
@@ -240,6 +241,16 @@ class MainActivity : Activity() {
             Log.e("login activity", "Can not read file: $e")
         }
         return ret
+    }
+    private fun writeToFile(fileName: String, data: String, context: Context) {
+        try {
+            val outputStreamWriter =
+                OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE))
+            outputStreamWriter.write(data)
+            outputStreamWriter.close()
+        } catch (e: IOException) {
+            Log.e("Exception", "File write failed: " + e.toString())
+        }
     }
 }
 

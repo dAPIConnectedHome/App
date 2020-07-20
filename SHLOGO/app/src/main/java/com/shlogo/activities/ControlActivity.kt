@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.google.gson.annotations.SerializedName
 import com.shlogo.R
 import com.shlogo.R.*
+import com.shlogo.fragments.TestClass
 import org.json.JSONArray
 import java.nio.charset.Charset
 
@@ -147,18 +148,3 @@ class ControlActivity : AppCompatActivity() {
     }
 
 }
-
-data class TestClassa(
-    @SerializedName("date")
-    var date: String,
-    @SerializedName("temperatureC")
-    var temperatureC: String,
-    @SerializedName("temperatureF")
-    var temperatureF: String,
-    @SerializedName("summary")
-    var summary: String
-)
-data class Example(
-    @SerializedName("array")
-    var array: List<TestClass>? = null
-)
