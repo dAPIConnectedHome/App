@@ -9,24 +9,61 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.shlogo.R
-
 import com.shlogo.classes.Device
 
-class SettingsAdapter(c: Context, dev: Device) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+/**
+ * Adapter of Settings view
+ *
+ * Create the different holders of the device informations in settings activity
+ *
+ * @param ct the previous context
+ * @param device the current device to change the settings
+ */
+class SettingsAdapter(
+    private var ctx: Context,
+    private val device: Device
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var ctx: Context = c
-    private val device = dev
-
+    /**
+     * One Information holder
+     *
+     * contains the topic, and the fill-able text
+     *
+     * @param itemView view
+     */
+    class InformationHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val mainLayout = itemView.findViewById<ConstraintLayout>(R.id.settingsInfoMainLayout)
+        val textTitle = itemView.findViewById<TextView>(R.id.settingsTitle)
+        val textInfoFill = itemView.findViewById<TextInputEditText>(R.id.settingsInfoFill)
+    }
+    /**
+     * Create View holder
+     *
+     * returns the holder of the one information
+     *
+     * @param parent view group of the parent
+     * @param viewType current viewType to choose from
+     *
+     * @return holder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(ctx)
         val view = inflater.inflate(R.layout.settings_info_holder, parent, false)
         return InformationHolder(view)
     }
-
+    /**
+     * Fix size of 3 (Name, Room, Group)
+     */
     override fun getItemCount(): Int {
         return 3
     }
 
+    /**
+     * Fill the holder with information
+     *
+     * @param holder the holder information
+     * @param position the holder position
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewHolder: InformationHolder = holder as InformationHolder
         when(position){
@@ -47,13 +84,6 @@ class SettingsAdapter(c: Context, dev: Device) : RecyclerView.Adapter<RecyclerVi
             }
         }
 
-    }
-
-
-    public class InformationHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mainLayout = itemView.findViewById<ConstraintLayout>(R.id.settingsInfoMainLayout)
-        val textTitle = itemView.findViewById<TextView>(R.id.settingsTitle)
-        val textInfoFill = itemView.findViewById<TextInputEditText>(R.id.settingsInfoFill)
     }
 
 }

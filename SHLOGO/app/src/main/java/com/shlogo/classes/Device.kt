@@ -1,18 +1,21 @@
 package com.shlogo.classes
 
-import android.content.Context
-import android.util.Log
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.google.gson.annotations.SerializedName
-import com.shlogo.R
-import org.json.JSONArray
 
-
+/**
+ * Device Class
+ *
+ * Hold the information of one device. Is directly converted from Json Array.
+ *
+ * @param clientId the id of the client get from the broker
+ * @param name name set from the user (or default name)
+ * @param topic currently just the clientId
+ * @param room the name of room (default: -1)
+ * @param typeid the id to find the type information
+ * @param groupId no id, but actual names of the groups (default: -1)
+ * @param type name of type, currently not used
+ * @param currentValue the current value from the server
+ */
 class Device(
      @SerializedName("clientId")
      var clientId: String,

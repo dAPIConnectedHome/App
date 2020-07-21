@@ -4,47 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SensorActivty">
-
-    <TextView
-        android:id="@+id/idText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/typeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/nameText"
-        app:layout_constraintTop_toTopOf="@+id/nameText" />
-
-    <TextView
-        android:id="@+id/nameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/idText"
-        app:layout_constraintTop_toTopOf="@+id/idText" />
-
-    <TextView
-        android:id="@+id/roomText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/typeText"
-        app:layout_constraintTop_toTopOf="@+id/typeText" />
-
-    <TextView
-        android:id="@+id/valueText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/idText"
-        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+    tools:context=".activities.SensorActivity">
 
     <ImageButton
         android:id="@+id/settingsImageButton"
@@ -53,6 +13,7 @@
         android:layout_marginTop="3dp"
         android:layout_marginEnd="3dp"
         android:background="@drawable/roundcorner"
+        android:contentDescription="@string/action_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/settingssmall" />
@@ -77,7 +38,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/valueText">
+        app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 

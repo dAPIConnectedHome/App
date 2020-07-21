@@ -12,12 +12,16 @@ import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.gson.annotations.SerializedName
 import com.shlogo.R
 import com.shlogo.classes.Device
 import com.shlogo.classes.Type
 import java.io.*
 
+/**
+ * History Fragment
+ *
+ * The Fragment which shows the history of the device as a graphs.
+ */
 class History : Fragment() {
 
     lateinit var device: Device
@@ -26,9 +30,6 @@ class History : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        //val queue: RequestQueue = Volley.newRequestQueue(this.requireContext())
-        //val url = "http://gitathome.dd-dns.de:62001/weatherforecast"
-        //var packagesArray: List<TestClass>? = null
         val deviceNameText = requireActivity().findViewById<TextView>(R.id.histData)
         deviceNameText.text = device.name
         var label = ""
@@ -48,13 +49,9 @@ class History : Fragment() {
         val entries1 = mutableListOf<Entry>()
         val regex = Regex("([0-9]+);")
         val matches = regex.findAll(data)
-        //var iString = readFromFile("timestamp.txt", requireContext())
         var i = 0
-        //if(iString != ""){
-        //    i = iString.toInt()
-        //}
         matches.forEach { f ->
-            val x = (i * 5000)
+            val x = i / 60
             entries1.add(Entry(x.toFloat(), f.groupValues[1].toFloat()))
             i++
         }
@@ -72,45 +69,6 @@ class History : Fragment() {
         val histText = requireView().findViewById<TextView>(R.id.histData)
         lineChartView.data = LineData(lineDataSet1)
         lineChartView.invalidate()
-
-
-        //val thread = Runnable {
-        //    while (inView) {
-        //        histText.post(Runnable {
-        //            val stringRequest = JsonArrayRequest(
-        //                Request.Method.GET, url, null,
-        //                Response.Listener { response ->
-        //                    val gson = GsonBuilder().create()
-        //                    packagesArray = gson.fromJson(response.toString(), Array<TestClass>::class.java).toList()
-        //                },
-        //                Response.ErrorListener {
-        //                    fun onErrorResponse(error: VolleyError) {
-        //                        Log.e("tag", "Error at sign in : " + error.message)
-        //                    }
-        //                    onErrorResponse(it)
-        //                }
-        //            )
-        //            queue.add(stringRequest)
-        //            if(!packagesArray.isNullOrEmpty()){
-        //                histText.text =  packagesArray!![0].temperatureC
-        //                val time = i.toFloat()
-        //                val value = packagesArray!![0].temperatureC.toFloat()
-        //                entries1.add(Entry(time, value))
-        //                lineDataSet1 = LineDataSet(entries1, "Temperature")
-        //                lineDataSet1.color = Color.RED
-        //                lineDataSet1.setCircleColor(Color.RED)
-        //                lineDataSet1.lineWidth = 14F
-        //                lineChartView.data = LineData(lineDataSet1)
-        //                lineChartView.notifyDataSetChanged()
-        //                lineChartView.invalidate()
-        //                i++
-        //            }
-        //        })
-        //        Thread.sleep(1000)
-        //    }
-        //}
-        //val myThread = Thread(thread)
-        //myThread.start()
     }
 
     override fun onCreateView(
@@ -135,17 +93,7 @@ class History : Fragment() {
         inView = false
         super.onStop()
     }
-    private fun writeToFile(fileName: String, data: String, context: Context) {
-        try {
-            val outputStreamWriter =
-                OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE))
-            outputStreamWriter.write(data)
-            outputStreamWriter.close()
-        } catch (e: IOException) {
-            Log.e("Exception", "File write failed: " + e.toString())
-        }
-    }
-    fun readFromFile(fileName: String, context: Context): String {
+    private fun readFromFile(fileName: String, context: Context): String {
         var ret = ""
         try {
             val inputStream: InputStream? = context.openFileInput(fileName)
@@ -169,13 +117,41 @@ class History : Fragment() {
     }
 }
 
-data class TestClass(
-    @SerializedName("date")
-    var date: String,
-    @SerializedName("temperatureC")
-    var temperatureC: String,
-    @SerializedName("temperatureF")
-    var temperatureF: String,
-    @SerializedName("summary")
-    var summary: String
-)
+/*val thread = Runnable {
+    while (inView) {
+        histText.post(Runnable {
+            val stringRequest = JsonArrayRequest(
+                Request.Method.GET, url, null,
+                Response.Listener { response ->
+                    val gson = GsonBuilder().create()
+                    packagesArray = gson.fromJson(response.toString(), Array<TestClass>::class.java).toList()
+                },
+                Response.ErrorListener {
+                    fun onErrorResponse(error: VolleyError) {
+                        Log.e("tag", "Error at sign in : " + error.message)
+                    }
+                    onErrorResponse(it)
+                }
+            )
+            queue.add(stringRequest)
+            if(!packagesArray.isNullOrEmpty()){
+                histText.text =  packagesArray!![0].temperatureC
+                val time = i.toFloat()
+                val value = packagesArray!![0].temperatureC.toFloat()
+                entries1.add(Entry(time, value))
+                lineDataSet1 = LineDataSet(entries1, "Temperature")
+                lineDataSet1.color = Color.RED
+                lineDataSet1.setCircleColor(Color.RED)
+                lineDataSet1.lineWidth = 14F
+                lineChartView.data = LineData(lineDataSet1)
+                lineChartView.notifyDataSetChanged()
+                lineChartView.invalidate()
+                i++
+            }
+        })
+        Thread.sleep(1000)
+    }
+}
+val myThread = Thread(thread)
+myThread.start()
+*/

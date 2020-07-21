@@ -10,8 +10,23 @@ import com.google.gson.GsonBuilder
 import com.shlogo.R
 import org.json.JSONArray
 
+/**
+ * Networking Class
+ *
+ * Handle all the network stuff. Access the one singelton request queue.
+*/
 class Networking {
 
+    /**
+     * Get information of one device
+     *
+     * Add a Get request to the queue to get the information of one device.
+     * On success call the callback on success function.
+     *
+     * @param callback the associated callback
+     * @param dev the device which is requested
+     * @param ctx previous context
+     */
     fun getDevice(callback: VolleyCallbackDevice, dev: String, ctx: Context) {
         val url = ctx.getString(R.string.url) + "/$dev"
         val arrayRequest = JsonObjectRequest(
@@ -30,7 +45,15 @@ class Networking {
         )
         MySingleton.getInstance(ctx).addToRequestQueue(arrayRequest)
     }
-
+    /**
+     * Post request
+     *
+     * Add a post request to the queue to change the value in the database of the device.
+     *
+     * @param dev the device which is requested
+     * @param value the value of the change request
+     * @param ctx previous context
+     */
     fun postRequest(dev: String, value: String, context: Context){
         val jsonObject = JSONArray("[$value]")
         var url = context.getString(R.string.url)
@@ -55,7 +78,19 @@ class Networking {
         )
         MySingleton.getInstance(context).addToRequestQueue(request)
     }
-
+    /**
+     * Put request
+     *
+     * Add a put request to the queue to change the device information in the database.
+     * On success call the callback on success function.
+     *
+     * @param callback the associated callback
+     * @param dev the device which is requested
+     * @param name the name of the device to change to
+     * @param room the room of the device to change to
+     * @param group the group/s of the device to change to
+     * @param ctx previous context
+     */
     fun putRequest(callback: VolleyCallbackPut, dev: String, name: String, room: String, group: String, context: Context){
         val jsonObject = JSONArray("[\"$name\", \"$room\", \"$group\"]")
         var url = context.getString(R.string.url)
@@ -78,8 +113,15 @@ class Networking {
         callback.onSuccess()
         MySingleton.getInstance(context).addToRequestQueue(request)
     }
-
-
+    /**
+     * Get request
+     *
+     * Add a Get request to the queue to get the information of all devices.
+     * On success call the callback on success function.
+     *
+     * @param callback the associated callback
+     * @param ctx previous context
+     */
     fun getDevices(callback: VolleyCallbackDevices, context: Context) {
         val url = context.getString(R.string.url)
         val arrayRequest = JsonArrayRequest(
@@ -98,7 +140,15 @@ class Networking {
         )
         MySingleton.getInstance(context).addToRequestQueue(arrayRequest)
     }
-
+    /**
+     * Get request
+     *
+     * Add a Get request to the queue to get the information of all types.
+     * On success call the callback on success function.
+     *
+     * @param callback the associated callback
+     * @param ctx previous context
+     */
     fun getTypes(callback: VolleyCallbackTypes, context: Context){
         val url = context.getString(R.string.urlTypes)
         val arrayRequest = JsonArrayRequest(
@@ -133,7 +183,14 @@ class Networking {
         }
     }
 }
-
+/**
+ * Singelton of the request queue
+ *
+ * the server can be overloaded when more the one request queue is active -> every
+ * request is handled in this singelton queue.
+ *
+ * @param ctx previous context
+ */
 class MySingleton constructor(context: Context) {
     companion object {
         @Volatile
@@ -145,7 +202,7 @@ class MySingleton constructor(context: Context) {
                 }
             }
     }
-    val requestQueue: RequestQueue by lazy {
+    private val requestQueue: RequestQueue by lazy {
         // applicationContext is key, it keeps you from leaking the
         // Activity or BroadcastReceiver if someone passes one in.
         Volley.newRequestQueue(context.applicationContext)

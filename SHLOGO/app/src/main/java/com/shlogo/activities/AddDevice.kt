@@ -1,25 +1,19 @@
 package com.shlogo.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.shlogo.R
 import com.shlogo.classes.Networking
-import org.json.JSONArray
-import java.io.*
 
-
+/**
+ * AddDevice Activity
+ *
+ * Activity which let user add a new device to the app
+ */
 class AddDevice : AppCompatActivity() {
 
     private lateinit var listview: ListView
@@ -27,13 +21,18 @@ class AddDevice : AppCompatActivity() {
     private lateinit var buttonRoom: ImageButton
     private lateinit var buttonGroup: ImageButton
     private var activeGroups = mutableListOf<String>()
-    val changesApplied = object : Networking.VolleyCallbackPut {
+
+    /**
+     * Successful Server Request of Put Request
+     *
+     * Go back to the overview activity
+     */
+    private val changesApplied = object : Networking.VolleyCallbackPut {
         override fun onSuccess() {
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +42,11 @@ class AddDevice : AppCompatActivity() {
 
     }
 
+    /**
+     * Room list Popup functionality
+     *
+     * Configure the functionality of the room popup view.
+     */
     private fun roomList(){
         buttonRoom = findViewById<ImageButton>(R.id.roomListButton)
         roomview = findViewById<ListView>(R.id.roomList)
@@ -60,6 +64,11 @@ class AddDevice : AppCompatActivity() {
             roomview.visibility = View.INVISIBLE
         }
     }
+    /**
+     * Group list Popup functionality
+     *
+     * Configure the functionality of the group popup view.
+     */
     private fun groupList(){
         buttonGroup = findViewById<ImageButton>(R.id.group_pop)
         listview = findViewById<ListView>(R.id.groupList)
@@ -84,6 +93,11 @@ class AddDevice : AppCompatActivity() {
         }
     }
 
+    /**
+     * Popups visibility
+     *
+     * Set the visibilities of the popups on user inputs
+     */
     fun hidePopups(view: View){
         if(listview.visibility == View.VISIBLE){
             listview.visibility = View.INVISIBLE
@@ -106,7 +120,6 @@ class AddDevice : AppCompatActivity() {
             roomview.visibility = View.INVISIBLE
         }
     }
-
 
     fun onFinish(view: View){
 
@@ -138,39 +151,6 @@ class AddDevice : AppCompatActivity() {
     }
     fun onCancel(view: View){
         onBackPressed();
-    }
-
-    private fun writeToFile(data: String, context: Context) {
-        try {
-            val outputStreamWriter =
-                OutputStreamWriter(context.openFileOutput("devices.txt", Context.MODE_PRIVATE))
-            outputStreamWriter.write(data)
-            outputStreamWriter.close()
-        } catch (e: IOException) {
-            Log.e("Exception", "File write failed: " + e.toString())
-        }
-    }
-    private fun readFromFile(context: Context): String {
-        var ret = ""
-        try {
-            val inputStream: InputStream? = context.openFileInput("devices.txt")
-            if (inputStream != null) {
-                val inputStreamReader = InputStreamReader(inputStream)
-                val bufferedReader = BufferedReader(inputStreamReader)
-                var receiveString: String? = ""
-                val stringBuilder = StringBuilder()
-                while (bufferedReader.readLine().also({ receiveString = it }) != null) {
-                    stringBuilder.append("\n").append(receiveString)
-                }
-                inputStream.close()
-                ret = stringBuilder.toString()
-            }
-        } catch (e: FileNotFoundException) {
-            Log.e("login activity", "File not found: " + e.toString())
-        } catch (e: IOException) {
-            Log.e("login activity", "Can not read file: $e")
-        }
-        return ret
     }
 }
 

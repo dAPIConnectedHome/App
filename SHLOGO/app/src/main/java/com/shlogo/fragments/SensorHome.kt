@@ -21,15 +21,12 @@ class SensorHome : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val idText = requireView().findViewById<TextView>(R.id.idText)
-        val typeText = requireView().findViewById<TextView>(R.id.typeText)
+
 
         val nameText = requireView().findViewById<TextView>(R.id.nameText)
         val roomText = requireView().findViewById<TextView>(R.id.roomText)
         val valueText = requireView().findViewById<TextView>(R.id.valueText)
         val image = requireView().findViewById<ImageView>(R.id.imageSensorHome)
-        idText.text = device.clientId
-        typeText.text = device.type
         nameText.text = device.name
         roomText.text = device.room
         valueText.text = device.currentValue.toString()

@@ -12,20 +12,47 @@ import com.shlogo.R
 import com.shlogo.classes.Group
 import com.shlogo.classes.Room
 
+/**
+ * Adapter of one Room
+ *
+ * Create the different holders of the nested recycler view
+ *
+ * @param ct the previous context
+ * @param rooms list of all rooms
+ * @param myAdapter list of all room adapter
+ * @param groups list of all groups
+ * @param myGrapt list of all group adapter
+ */
 class RoomAdapter(
-    c: Context,
-    dev: MutableList<Room>,
-    myAdapt: MutableList<MyAdapter>,
-    grp: MutableList<Group>,
-    myGrapt: MutableList<MyAdapter>
+    private var ct: Context,
+    private var rooms: MutableList<Room>,
+    private var myAdapter: MutableList<MyAdapter>,
+    private var groups: MutableList<Group>,
+    private var myGrapt: MutableList<MyAdapter>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var ct: Context = c
-    private var rooms: MutableList<Room> = dev
-    private var myAdapter: MutableList<MyAdapter> = myAdapt
-    private var groups: MutableList<Group> = grp
-    private var myGrapt: MutableList<MyAdapter> = myGrapt
+    /**
+     * Room/Group holder
+     *
+     * holder with the nested recycler view
+     *
+     * @param itemView view
+     */
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val text = itemView.findViewById<TextView>(R.id.roomName)
+        val nestedView = itemView.findViewById<RecyclerView>(R.id.nestedView)
+    }
 
+    /**
+     * Create View holder
+     *
+     * returns the holder of the room name
+     *
+     * @param parent view group of the parent
+     * @param viewType current viewType to choose from
+     *
+     * @return holder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(ct)
         lateinit var view: View
@@ -38,6 +65,9 @@ class RoomAdapter(
         return MyViewHolder(view)
     }
 
+    /**
+     * Return amount of room/group
+     */
     override fun getItemCount(): Int {
         if (rooms.isNotEmpty()){
             if(groups.isNotEmpty()){
@@ -53,11 +83,15 @@ class RoomAdapter(
         return 1
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val text = itemView.findViewById<TextView>(R.id.roomName)
-        val nestedView = itemView.findViewById<RecyclerView>(R.id.nestedView)
-    }
-
+    /**
+     * Functionality of resize
+     *
+     * Include the right nested recycler view and depending on the amount if devices resize the
+     * nested view to 2 rows. Known bug: change of item count at runtime cause crash.
+     *
+     * @param holder the holder information
+     * @param position the holder position
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder.itemViewType){
             1 -> {
@@ -93,11 +127,11 @@ class RoomAdapter(
 
         }
     }
+
+    /**
+     * Calculate the px of the smartphone
+     */
     fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
-    }
-
-    fun pxToDp(px: Int): Int {
-        return (px / Resources.getSystem().displayMetrics.density).toInt()
     }
 }

@@ -67,7 +67,7 @@
         style="@android:style/Widget.Material.Light.ImageButton"
         android:layout_width="40dp"
         android:layout_height="45dp"
-        android:onClick="onRefesh"
+        android:onClick="onRefresh"
         android:src="@android:drawable/ic_popup_sync"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

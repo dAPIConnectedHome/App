@@ -15,26 +15,39 @@ import com.shlogo.R.layout
 import com.shlogo.adapters.MyAdapter
 import com.shlogo.adapters.RoomAdapter
 import com.shlogo.classes.*
-import com.shlogo.services.MyService
 import java.io.*
 
 
-
+/**
+ * Main Activity/ Home Overview
+ *
+ * Show every room and their devices also append groups and their devices
+ */
 class MainActivity : Activity() {
 
-    var listOfDevices =  mutableListOf<Device>()
-    var listOfNotAddedDevices = mutableListOf<Device>()
-    var listOfGroups = mutableListOf<Group>()
-    var listOfRooms = mutableListOf<Room>()
-    var listOfTypes = mutableListOf<Type>()
+    private var listOfDevices =  mutableListOf<Device>()
+    private var listOfNotAddedDevices = mutableListOf<Device>()
+    private var listOfGroups = mutableListOf<Group>()
+    private var listOfRooms = mutableListOf<Room>()
+    private var listOfTypes = mutableListOf<Type>()
     private val net = Networking()
     lateinit var text: String
+    /**
+     * Successful Server Request of all Devices
+     *
+     * Create main View and start simulation of the history
+     */
     private val volDevices = object : Networking.VolleyCallbackDevices {
         override fun onSuccess(result: List<Device>?) {
             createMainView(result)
             simulateHistory()
         }
     }
+    /**
+     * Successful Server Request of Types
+     *
+     * Start server request of devices
+     */
     private val volTypes = object : Networking.VolleyCallbackTypes {
         override fun onSuccess(result: List<Type>?) {
             listOfTypes =  (result as MutableList<Type>?)!!
@@ -42,37 +55,24 @@ class MainActivity : Activity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(layout.activity_main)
-    }
-    override fun onDestroy() {
-        Intent(this, MyService::class.java).also { intent ->
-            startService(intent)
-        }
-        super.onDestroy()
-    }
-    override fun onResume() {
-        listOfDevices.clear()
-        listOfNotAddedDevices.clear()
-        listOfGroups.clear()
-        listOfRooms.clear()
-        listOfTypes.clear()
-        net.getTypes(volTypes,this)
-        super.onResume()
+    /**
+     * Refresh Activity
+     *
+     * Restarts the Activity and get new device information
+     *
+     * @param view The View
+     */
+    fun onRefresh(view: View){
+        recreate()
     }
 
-    fun onRefesh(view: View){
-        val intent = Intent(this, MainActivity::class.java).apply {
-        }
-        finish();
-        startActivity(intent)
-    }
-    fun onBottonClick(view: View) {
-        val intent = Intent(this, ControlActivity::class.java).apply {
-        }
-        startActivity(intent)
-    }
+    /**
+     * Button Add new Device
+     *
+     * Open the Activity AddDevice to fill out the information for a new device
+     *
+     * @param view The View
+     */
     fun addDevice(view: View){
         val groups = ArrayList<String>()
         var i = 0
@@ -98,9 +98,41 @@ class MainActivity : Activity() {
 
         startActivity(intent)
     }
+
+
+    /**
+     * Create Lists and Text
+     *
+     * Is called after successfully getting data from the server.
+     * Fill out the lists listOfDevices, listOfNotAddedDevices, listOfGroups, listOfRooms
+     * from the result. Create with these information the RecyclerViews and the TextView for not
+     * added devices.
+     *
+     * @param result The Result form the server request
+     */
     fun createMainView(result: List<Device>?) {
         val textView = findViewById<TextView>(R.id.mainTextView)
         listOfDevices = (result as MutableList<Device>?)!!
+        fillLists()
+        createRecViews()
+        var i = 0
+        var textString = ""
+        if(listOfNotAddedDevices.isNotEmpty()) {
+            textString = "Not added devices: "
+        }
+        while (i < listOfNotAddedDevices.size){
+            textString += listOfNotAddedDevices[i].clientId + " -- "
+            i++
+        }
+        textView.text = textString
+    }
+    /**
+     * Fill Lists
+     *
+     * Fill out the lists listOfDevices, listOfNotAddedDevices, listOfGroups, listOfRooms
+     * from the result
+     */
+    private fun fillLists(){
         var i = 0
         while (i < listOfDevices.size) {
             if(listOfDevices[i].room == "-1"){
@@ -149,7 +181,14 @@ class MainActivity : Activity() {
             }
             i++
         }
-        i = 0
+    }
+    /**
+     * Create Views
+     *
+     * Create with previous information the RecyclerViews.
+     */
+    private fun createRecViews(){
+        var i = 0
         val listOfAdapter = mutableListOf<MyAdapter>()
         val listOfAdapterGroup = mutableListOf<MyAdapter>()
         while (i < listOfRooms.size){
@@ -181,18 +220,7 @@ class MainActivity : Activity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = roomAdapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-        i = 0
-        var textString = ""
-        if(listOfNotAddedDevices.isNotEmpty()) {
-            textString = "Not added devices: "
-        }
-        while (i < listOfNotAddedDevices.size){
-            textString += listOfNotAddedDevices[i].clientId + " -- "
-            i++
-        }
-        textView.text = textString
     }
-
 
     private val simHis = object : Networking.VolleyCallbackDevice{
         override fun onSuccess(result: Device?) {
@@ -204,8 +232,13 @@ class MainActivity : Activity() {
             writeToFile(filename, data, this@MainActivity)
         }
     }
-
-    fun simulateHistory(){
+    /**
+     * Run simulation of History
+     *
+     * Open up a new thread, which get the current data of the server in a 5 sec interval and store
+     * them local in files. These are later read to show the graph.
+     */
+    private fun simulateHistory(){
         val thread = Runnable {
             while (true) {
                 var i = 0
@@ -220,6 +253,14 @@ class MainActivity : Activity() {
         myThread.start()
     }
 
+    /**
+     * Read a file
+     *
+     * Read a text file and return its content as string
+     *
+     * @param fileName the readable filename
+     * @param context the current context
+     */
     fun readFromFile(fileName: String, context: Context): String {
         var ret = ""
         try {
@@ -242,6 +283,15 @@ class MainActivity : Activity() {
         }
         return ret
     }
+    /**
+     * Write a file
+     *
+     * Write to a text file a string
+     *
+     * @param fileName the readable filename
+     * @param data the data which is written
+     * @param context the current context
+     */
     private fun writeToFile(fileName: String, data: String, context: Context) {
         try {
             val outputStreamWriter =
@@ -252,12 +302,29 @@ class MainActivity : Activity() {
             Log.e("Exception", "File write failed: " + e.toString())
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(layout.activity_main)
+    }
+    override fun onResume() {
+        listOfDevices.clear()
+        listOfNotAddedDevices.clear()
+        listOfGroups.clear()
+        listOfRooms.clear()
+        listOfTypes.clear()
+        net.getTypes(volTypes,this)
+        super.onResume()
+    }
 }
 
 
-//val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
-/*val existing = readFromFile(this)
+
+/*-OLD DATA-*/
+/*
+val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+val existing = readFromFile(this)
 val regex = Regex("id = ([0-9]+);type = ([^;]*);device = ([^;]*);room = ([^;]*);group = ([^;]*);")
 val matches = regex.findAll(existing)
 var id = mutableListOf<String>()
@@ -399,7 +466,6 @@ val myAdapter = MyAdapter(
 )
 recyclerView.adapter = myAdapter
 recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)*/
-
 /*public final class MainActivity : FragmentActivity() {
 
     var layoutList = mutableListOf<ConstraintLayout>()
@@ -409,7 +475,7 @@ recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutMa
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_main)
         val inflater =layoutInflater
-        val view = inflater.inflate(R.layout.fragment_bulb, mainmain, false)
+        val view = inflater.inflate(R.layout.actor, mainmain, false)
 
         mainmain.addView(view)
         //if (savedInstanceState == null) {

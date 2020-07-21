@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Startup  page
+ *
+ * Splash activity with the logo of the app
+ */
 public class SplashActivity extends AppCompatActivity {
 
     @Override

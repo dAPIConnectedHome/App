@@ -13,37 +13,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.DeviceSettingsActivity"></activity>
-
-        <receiver
-            android:name=".notif.StartReciever"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.SCREEN_ON" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name=".activities.SensorActivty" />
-        <activity android:name=".activities.LampActivity" />
+        <activity android:name=".activities.DeviceSettingsActivity" />
+        <activity android:name=".activities.SensorActivity" />
+        <activity android:name=".activities.ActorActivity" />
         <activity
             android:name=".activities.AddDevice"
             android:theme="@style/AddDevice">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.ControlActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
@@ -52,15 +34,13 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".services.MyService"
-            android:enabled="true"
-            android:exported="true" />
+        <receiver android:name=".MyBroadcastReceiver"  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.POWER_CONNECTED" />
+            </intent-filter>
+        </receiver>
     </application>
-
 </manifest>
